@@ -17,35 +17,14 @@ use std::error::Error as StdError;
 rustler::init!(
     "Elixir.SerdeRustlerTests",
     [
-        // json
-        ("decode_json", 1, json::decode),
-        (
-            "decode_json_dirty",
-            1,
-            json::decode,
-            SchedulerFlags::DirtyCpu
-        ),
-        ("encode_json_compact", 1, json::encode_compact),
-        (
-            "encode_json_compact_dirty",
-            1,
-            json::encode_compact,
-            SchedulerFlags::DirtyCpu
-        ),
-        ("encode_json_pretty", 1, json::encode_pretty),
-        (
-            "encode_json_pretty_dirty",
-            1,
-            json::encode_pretty,
-            SchedulerFlags::DirtyCpu
-        ),
-        // tests
-        ("readme", 1, readme),
-        ("test", 3, test::test),
-        ("transcode", 1, transcode),
-        ("transcode_dirty", 1, transcode, SchedulerFlags::DirtyCpu),
+        json::decode,
+        json::encode_compact,
+        json::encode_pretty,
+        readme,
+        test::test,
+        transcode
     ]
-)
+);
 
 /// Implements the README example.
 #[inline]
