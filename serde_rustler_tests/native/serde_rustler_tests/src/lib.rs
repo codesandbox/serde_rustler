@@ -14,25 +14,38 @@ use rustler::{types::tuple, Encoder, Env, NifResult, SchedulerFlags, Term};
 use serde_rustler::{atoms, from_term, to_term, Deserializer, Error, Serializer};
 use std::error::Error as StdError;
 
-rustler_export_nifs! {
+rustler::init!(
     "Elixir.SerdeRustlerTests",
     [
         // json
         ("decode_json", 1, json::decode),
-        ("decode_json_dirty", 1, json::decode, SchedulerFlags::DirtyCpu),
+        (
+            "decode_json_dirty",
+            1,
+            json::decode,
+            SchedulerFlags::DirtyCpu
+        ),
         ("encode_json_compact", 1, json::encode_compact),
-        ("encode_json_compact_dirty", 1, json::encode_compact, SchedulerFlags::DirtyCpu),
+        (
+            "encode_json_compact_dirty",
+            1,
+            json::encode_compact,
+            SchedulerFlags::DirtyCpu
+        ),
         ("encode_json_pretty", 1, json::encode_pretty),
-        ("encode_json_pretty_dirty", 1, json::encode_pretty, SchedulerFlags::DirtyCpu),
-
+        (
+            "encode_json_pretty_dirty",
+            1,
+            json::encode_pretty,
+            SchedulerFlags::DirtyCpu
+        ),
         // tests
         ("readme", 1, readme),
         ("test", 3, test::test),
         ("transcode", 1, transcode),
         ("transcode_dirty", 1, transcode, SchedulerFlags::DirtyCpu),
-    ],
-    None
-}
+    ]
+)
 
 /// Implements the README example.
 #[inline]
