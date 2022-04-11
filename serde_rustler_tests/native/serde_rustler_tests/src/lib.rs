@@ -7,42 +7,55 @@ mod test;
 mod types;
 
 use crate::types::Animal;
-use rustler::{types::tuple, Encoder, Env, NifResult, SchedulerFlags, Term};
+use rustler::{types::tuple, Encoder, Env, NifResult, Term};
 use serde_rustler::{atoms, from_term, to_term, Deserializer, Error, Serializer};
 
-rustler::rustler_export_nifs! {
+rustler::init! {
     "Elixir.SerdeRustlerTests",
     [
         // json
-        ("decode_json", 1, json::decode),
-        ("decode_json_dirty", 1, json::decode, SchedulerFlags::DirtyCpu),
-        ("encode_json_compact", 1, json::encode_compact),
-        ("encode_json_compact_dirty", 1, json::encode_compact, SchedulerFlags::DirtyCpu),
-        ("encode_json_pretty", 1, json::encode_pretty),
-        ("encode_json_pretty_dirty", 1, json::encode_pretty, SchedulerFlags::DirtyCpu),
+        json::decode,
+        json::decode_dirty,
+        json::encode_compact,
+        json::encode_compact_dirty,
+        json::encode_pretty,
+        json::encode_pretty_dirty,
 
         // tests
-        ("readme", 1, readme),
-        ("test", 3, test::test),
-        ("transcode", 1, transcode),
-        ("transcode_dirty", 1, transcode, SchedulerFlags::DirtyCpu),
-    ],
-    None
+        readme,
+        test::test,
+        transcode,
+        transcode_dirty,
+    ]
 }
 
 /// Implements the README example.
 #[inline]
-pub fn readme<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    let animal: Animal = from_term(args[0])?;
+#[rustler::nif]
+pub fn readme<'a>(env: Env<'a>, term: Term<'a>) -> NifResult<Term<'a>> {
+    let animal: Animal = from_term(term)?;
     println!("\n deserialized animal from README example: {:?}", animal);
     to_term(env, animal).map_err(|err| err.into())
 }
 
 /// Deserializes anything from an Elixir term and subsequently serializes the result back into an Elixir term, returning it.
 #[inline]
-pub fn transcode<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
+#[rustler::nif]
+// #[rustler::nif(name = "transcode_dirty", schedule = "DirtyCpu")]
+pub fn transcode<'a>(env: Env<'a>, term: Term<'a>) -> NifResult<Term<'a>> {
+    do_transcode(env, term)
+}
+
+#[inline]
+#[rustler::nif(schedule = "DirtyCpu")]
+pub fn transcode_dirty<'a>(env: Env<'a>, term: Term<'a>) -> NifResult<Term<'a>> {
+    do_transcode(env, term)
+}
+
+#[inline]
+fn do_transcode<'a>(env: Env<'a>, term: Term<'a>) -> NifResult<Term<'a>> {
     tag_tuple(env, || {
-        let de = Deserializer::from(args[0]);
+        let de = Deserializer::from(term);
         let ser = Serializer::from(env);
         serde_transcode::transcode(de, ser)
     })
