@@ -24,15 +24,15 @@ serde_rustler = "0.0.3"
 use serde::{Serialize, Deserialize}
 use serde_rustler::{from_term, to_term};
 
-rustler::rustler_export_nifs! {
+rustler::init! {
     "Elixir.SerdeRustlerTests",
-    [("nif", 1, nif)],
-    None
+    [nif]
 }
 
 #[derive(Serialize, Deserialize)]
 struct Animal = { ... };
 
+#[rustler::nif]
 fn nif<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
     // Deserialize term into a native Rust type.
     let animal: Animal = from_term(args[0])?;
@@ -51,10 +51,9 @@ use rustler::{Env, error::Error as NifError, NifResult, Term};
 use serde::{Serialize, Deserialize};
 use serde_rustler::{from_term, to_term};
 
-rustler::rustler_export_nifs! {
+rustler::init! {
     "Elixir.SerdeNif",
-    [("readme", 1, readme)],
-    None
+    [readme]
 }
 
 // NOTE: to serialize to the correct Elixir record, you MUST tell serde to
@@ -80,6 +79,7 @@ struct Animal {
     owner: Option<String>,
 }
 
+#[rustler::nif]
 fn readme<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
     let animal: Animal = from_term(args[0])?;
     println!("serialized animal: {:?}", animal);
