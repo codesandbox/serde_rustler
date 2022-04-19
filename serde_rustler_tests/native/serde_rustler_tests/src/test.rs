@@ -9,15 +9,12 @@ use rustler::{Encoder, Env, NifResult, Term};
 use serde::{Deserialize, Serialize};
 use serde_bytes::Bytes;
 use serde_rustler::{atoms, from_term, to_term};
-use std::{collections::HashMap, error::Error as StdError, fmt::Debug};
+use std::{collections::HashMap, fmt::Debug};
 
 /// Serializes or deserializes a known Elixir term to/from a known Rust value, asserts that the resulting is equivalent to known term/value.
 #[inline]
-pub fn test<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    let test_type: &str = args[0].decode()?;
-    let test_name: &str = args[1].decode()?;
-    let expected_term = args[2];
-
+#[rustler::nif]
+pub fn test<'a>(env: Env<'a>, test_type: &str, test_name: &str, expected_term: Term<'a>) -> NifResult<Term<'a>> {
     macro_rules! run_test {
         ($actual:expr) => {
             run_test(env, test_type, $actual, expected_term)
@@ -32,19 +29,19 @@ pub fn test<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
 
         // Signed Integers
         "i8 (min)" => run_test!(i8::min_value()),
-        "i8 (0)" => run_test!(0 as i8),
+        "i8 (0)" => run_test!(0_i8),
         "i8 (max)" => run_test!(i8::max_value()),
         "i16 (min)" => run_test!(i16::min_value()),
-        "i16 (0)" => run_test!(0 as i16),
+        "i16 (0)" => run_test!(0_i16),
         "i16 (max)" => run_test!(i16::max_value()),
         "i32 (min)" => run_test!(i32::min_value()),
-        "i32 (0)" => run_test!(0 as i32),
+        "i32 (0)" => run_test!(0_i32),
         "i32 (max)" => run_test!(i32::max_value()),
         "i64 (min)" => run_test!(i64::min_value()),
-        "i64 (0)" => run_test!(0 as i64),
+        "i64 (0)" => run_test!(0_i64),
         "i64 (max)" => run_test!(i64::max_value()),
         "i128 (min)" => run_test!(i128::min_value()),
-        "i128 (0)" => run_test!(0 as i128),
+        "i128 (0)" => run_test!(0_i128),
         "i128 (max)" => run_test!(i128::max_value()),
 
         // Unsigned Integers
@@ -193,7 +190,7 @@ where
 {
     match to_term(env, actual) {
         Err(reason) => {
-            let reason_term = reason.description().encode(env);
+            let reason_term = reason.to_string().encode(env);
             TestResult::Err(error_tuple(env, reason_term))
         }
         Ok(actual_term) => {
@@ -213,7 +210,7 @@ where
 {
     match from_term(expected_term) {
         Err(reason) => {
-            let reason_term = reason.description().encode(env);
+            let reason_term = reason.to_string().encode(env);
             TestResult::Err(error_tuple(env, reason_term))
         }
         Ok(expected) => {

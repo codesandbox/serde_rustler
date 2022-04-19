@@ -544,6 +544,7 @@ where
     }
 }
 
+#[allow(dead_code)]
 /// EnumDeserializerType
 pub enum EnumDeserializerType {
     Any,
