@@ -45,7 +45,7 @@ defmodule SerdeRustlerTests.Mixfile do
   end
 
   defp deps() do
-    [{:rustler, "~> 0.23"}]
+    [{:rustler, "~> 0.26"}]
   end
 
   defp dev_deps() do
@@ -53,18 +53,18 @@ defmodule SerdeRustlerTests.Mixfile do
       {:benchee, "~> 1.0", only: [:bench]},
       {:benchee_html, "~> 1.0", only: [:bench]},
       {:benchee_markdown, "~> 0.2", only: [:bench]},
-      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.2", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.10", only: [:test]},
       {:ex_doc, "~> 0.19", only: [:dev], runtime: false},
-      {:mix_test_watch, "~> 0.8", only: [:dev], runtime: false},
+      {:mix_test_watch, "~> 1.1", only: [:dev], runtime: false},
       # JSON serialization libs for benchmarks
       {:exjsx, "~> 4.0", only: [:dev, :bench]},
-      {:jason, "~> 1.2"},
+      {:jason, "~> 1.0"},
       {:jiffy, "~> 1.0", only: [:dev, :bench]},
       {:json, "~> 1.3", only: [:dev, :bench]},
       {:jsone, "~> 1.4", only: [:dev, :bench]},
-      {:poison, "~> 4.0", only: [:test, :bench]},
+      {:poison, "~> 5.0", only: [:test, :bench]},
       {:tiny, "~> 1.0", only: [:dev, :bench]}
     ]
   end

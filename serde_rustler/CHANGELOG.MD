@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2022-09-14
+### Changed
+- Update rustler to version 0.26.0 (supports OTP 25)
+- Use `rustler::atoms` and `rustler::init!` for compatibility
+- Add flags for compilation on ARM-based macOS
+
 ## [0.1.0] – 2020-03-05
 ### Changed
 - Update rustler to version 0.21.0 (supports OTP 22)
